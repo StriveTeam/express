@@ -1,12 +1,20 @@
-var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/photo_app", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-var schema = new mongoose.Schema({
-  name: String,
-  path: String,
-});
-module.exports = mongoose.model("Photo", schema);
+// const db = require("./db");
+// const Photo = db.photo;
 
-// Mongoose的模型上有所有的CRUD方法（Photo.create、Photo.update、Photo.remove 和Photo.find），所以这样就搞定了
+
+// db.connect(function (err) {
+//   if (err) {
+//       console.log("链接失败");
+//       throw (err)
+//   } else {
+//       console.log("链接成功");
+//       Photo.query("select* from express", (err, data) => {
+//         if (err) {
+//           console.log("error!", err);
+//         } else {
+//           console.log("success!", data);
+//         }
+//       });
+//   }
+// })
+
