@@ -29,30 +29,7 @@ const form = function (req, res) {
   });
 };
 
-router.get("/photo", list);
+router.get("/photo", UploadController.uploadList);
 router.get("/upload", form);
-// router.post("/uploads", UploadController.uploadFn);
-router.post("/uploads", function (req, res, next) {
-  var form = new multiparty.Form();
-  form.parse(req, function(err, fields, files) {
-    if(err) {
-      console.log('上传失败', err)
-    } else {
-      console.log('上传成功', files)
-      var file = files.file[0]
-      var rs = fs.createReadStream(file.path)
-      var newPath = '/images/' + file.originalFilename
-      var ws = fs.createWriteStream('./public' + newPath)
-      rs.pipe(ws)
-      ws.on('close', function() {
-        console.log('文件上传成功')
-        res.send({
-          err: '',
-          msg: newPath
-        })
-      })
-    }
-  });
-  // res.send(data);
-});
+router.post("/uploads", UploadController.uploadFn);
 module.exports = router;

@@ -9,7 +9,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var photoRouter = require("./routes/photo");
-require("./models/db");
+
 var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

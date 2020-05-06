@@ -3,27 +3,18 @@ var path = require("path");
 var multiparty = require("multiparty");
 var fs = require("fs");
 var join = path.join;
+const pool = require("../models/db.js");
 
 class UploadController {
   static async uploadFn(req, res, next) {
-    // console.log(ctx.request);
-    // const re = ctx.request.body;
-    // console.log(re);
-    // var data = {
-    //   name: 112,
-    //   file: 333,
-    // };
-    // res.send({
-    //   code: "200",
-    //   msg: `上传文件`,
-    //   result: data,
-    // });
-    // return;
-
     var form = new multiparty.Form();
     form.parse(req, function (err, fields, files) {
       if (err) {
         console.log("上传失败", err);
+        res.json({
+          code: 500,
+          err,
+        });
       } else {
         console.log("上传成功", files);
         var file = files.file[0];
@@ -33,12 +24,39 @@ class UploadController {
         rs.pipe(ws);
         ws.on("close", function () {
           console.log("文件上传成功");
-          res.send({
-            err: "",
-            msg: newPath,
+          const sql = `INSERT INTO fileupload SET filePath = ?`;
+          pool.connPool(sql, newPath, (err, rows) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            res.redirect("/photo");
+            // res.json({
+            //   code: 200,
+            //   msg: "ok",
+            //   result: { fileId: rows.insertId, filePath: newPath },
+            // });
           });
         });
       }
+    });
+  }
+  static async uploadList(req, res, next) {
+    const sql = "select * from fileupload";
+    pool.connPool(sql, "", (err, rows) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      res.render("photos", {
+        title: "photo",
+        photos: rows,
+      });
+      // res.json({
+      //   code: 200,
+      //   msg: "ok",
+      //   result: rows,
+      // });
     });
   }
 }
